@@ -6,6 +6,6 @@ interface AlertConfig {
 
 export default function AlertUI( config:AlertConfig ) {
     return (
-        <Alert variant="standard" severity="success"> {config.description} </Alert>
+        <Alert variant="outlined" severity="success"> {config.description} </Alert>
     )
 }
