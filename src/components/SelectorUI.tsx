@@ -4,7 +4,7 @@ import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 
-export default function SelectorUI() {
+export default function SelectorUI(){
 
     const [cityInput, setCityInput] = useState(''); //
 

@@ -8,7 +8,7 @@ import useFetchData from './functions/useFetchData';
 
 function App() {
 
-    const dataFetcherOutput = useFetchData();
+    const { dataFetcherOutput, loadingFetcherOutput, errorFetcherOutput } = useFetchData();
 
     return (
         <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -20,11 +20,23 @@ function App() {
             <Grid size={12} container justifyContent="right" alignItems="center"> <AlertUI description="No se preveen lluvias" /> </Grid>
 
             {/* Selector */}
-            <Grid size={{ xs: 12, md: 3 }}><SelectorUI /></Grid>
+            <Grid size={{ xs: 12, md: 3 }} id='selector'><SelectorUI/></Grid>
 
             {/* Indicadores */}
 
             <Grid container size={{ xs: 12, md: 9 }} >
+
+                {loadingFetcherOutput && (
+                    <Grid size={12} style={{ textAlign: "center" }}>
+                        <p>Cargando datos del clima...</p>
+                    </Grid>
+                )}
+
+                {errorFetcherOutput && (
+                    <Grid size={12} style={{ textAlign: "center", color: "red" }}>
+                        <p>Error al cargar los datos: {errorFetcherOutput}</p>
+                    </Grid>
+                )}
 
                 <Grid size={{ xs: 12, md: 3 }}>
                     {dataFetcherOutput &&
