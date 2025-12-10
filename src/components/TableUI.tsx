@@ -1,39 +1,39 @@
 import Box from '@mui/material/Box';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
-function combineArrays(arrLabels: Array<string>, arrValues1: Array<number>, arrValues2: Array<number>, arrResumen: Array<string>) {
-    return arrLabels.map((label, index) => ({
+function combineArrays(arrHoras: Array<string>, arrFechas: Array<string>, arrTemperaturas: Array<number>, arrVelocidad: Array<number>) {
+    return arrHoras.map((horas, index) => ({
         id: index,
-        label: label,
-        value1: arrValues1[index] + " °C",
-        value2: arrValues2[index] + " Km/h",
-        value3: arrResumen[index]
+        horas: horas,
+        fechas: arrFechas[index],
+        temperaturas: arrTemperaturas[index] + " °C",
+        velocidades: arrVelocidad[index] + " Km/h"
     }));
 }
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
-        field: 'label',
+        field: 'horas',
         headerName: 'Hora',
         width: 125,
     },
     {
-        field: 'value3',
+        field: 'fechas',
         headerName: 'Dia',
         description: 'No es posible ordenar u ocultar esta columna.',
         sortable: false,
         hideable: false,
         width: 100,
-        valueGetter: (_, row) => `${row.value3}`,
+        valueGetter: (_, row) => `${row.fechas}`,
     },
     {
-        field: 'value1',
+        field: 'temperaturas',
         headerName: 'Temperatura',
         width: 125,
     },
     {
-        field: 'value2',
+        field: 'velocidades',
         headerName: 'Velocidad del Viento',
         width: 125,
     },
@@ -41,14 +41,14 @@ const columns: GridColDef[] = [
 
 interface TableUIProps {
     hora: string[];
+    fecha: string[];
     temperatura: number[];
     velocidad: number[];
-    fecha: string[];
 }
 
 export default function TableUI(props: TableUIProps) {
 
-    const rows = combineArrays(props.hora, props.temperatura, props.velocidad, props.fecha);
+    const rows = combineArrays(props.hora, props.fecha, props.temperatura, props.velocidad);
 
     return (
         <Box sx={{ height: 350, width: '100%' }}>
