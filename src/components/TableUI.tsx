@@ -1,21 +1,24 @@
 import Box from '@mui/material/Box';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
-function combineArrays(arrHoras: Array<string>, arrFechas: Array<string>, arrTemperaturas: Array<number>, arrVelocidad: Array<number>) {
+function combineArrays(arrHoras: Array<string>, arrFechas: Array<string>, arrTemperaturas: Array<number>, arrVelocidad: Array<number>, arrProbabilidad: Array<number>) {
     return arrHoras.map((horas, index) => ({
         id: index,
         horas: horas,
         fechas: arrFechas[index],
         temperaturas: arrTemperaturas[index] + " °C",
-        velocidades: arrVelocidad[index] + " Km/h"
+        velocidades: arrVelocidad[index] + " Km/h",
+        probabilidades: arrProbabilidad[index] + " %"
     }));
 }
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
     {
         field: 'horas',
         headerName: 'Hora',
+        description: 'No es posible ordenar u ocultar esta columna.',
+        sortable: false,
+        hideable: false,
         width: 125,
     },
     {
@@ -37,6 +40,11 @@ const columns: GridColDef[] = [
         headerName: 'Velocidad del Viento',
         width: 125,
     },
+    {
+        field: 'probabilidades',
+        headerName: 'Probabilidad de Presipitacion',
+        width: 125,
+    },
 ];
 
 interface TableUIProps {
@@ -44,11 +52,12 @@ interface TableUIProps {
     fecha: string[];
     temperatura: number[];
     velocidad: number[];
+    probabilidad: number[];
 }
 
 export default function TableUI(props: TableUIProps) {
 
-    const rows = combineArrays(props.hora, props.fecha, props.temperatura, props.velocidad);
+    const rows = combineArrays(props.hora, props.fecha, props.temperatura, props.velocidad, props.probabilidad);
 
     return (
         <Box sx={{ height: 350, width: '100%' }}>

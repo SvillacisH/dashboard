@@ -31,10 +31,16 @@ export default function SelectorUI({ onOptionSelect }: SelectorProps){
                 <MenuItem value={"Quito"}>Quito</MenuItem>
                 <MenuItem value={"Manta"}>Manta</MenuItem>
                 <MenuItem value={"Cuenca"}>Cuenca</MenuItem>
+                <MenuItem value={"Salinas"}>Salinas</MenuItem>
+                <MenuItem value={"Puerto Lopez"}>Puerto Lopez</MenuItem>
+                <MenuItem value={"Puyo"}>Puyo</MenuItem>
+                <MenuItem value={"Vinces"}>Vinces</MenuItem>
+                <MenuItem value={"Samborondon"}>Samborondon</MenuItem>
+                <MenuItem value={"Latacunga"}>Latacunga</MenuItem>
             </Select>
             {cityInput && (
-                <p>
-                    Información del clima en <span style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{cityInput}</span>
+                <p style={{ color: '#212121' }}>
+                    Información del clima en <span style={{ textTransform: 'capitalize', fontWeight: 'bold', color: 'black'}}>{cityInput}</span>
                 </p>
             )}
         </FormControl>

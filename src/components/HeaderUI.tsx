@@ -5,7 +5,7 @@ export default function HeaderUI() {
         <Typography
             variant="h2"
             component="h1"
-            sx={{fontWeight: 'bold'}}>
+            sx={{fontWeight: 'bold',  color: '#212121'}}>
             Dashboard del Clima
         </Typography>
     )
