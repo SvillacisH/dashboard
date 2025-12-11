@@ -65,10 +65,11 @@ export default function AlertUI(prop: AlertUIProps) {
             alignItems: "center",
             textAlign: "center",
             fontWeight: "bold",
-            fontSize: "1.4rem",
+            fontSize: "2.5rem",
             "& .MuiAlert-icon": {
-                fontSize: "2.2rem"       // tamaño del ícono
-            }
-        }}>{climaActual.name}</Alert>
+                fontSize: "4rem"       
+            },
+        }}
+        >{climaActual.name}</Alert>
     )
 }

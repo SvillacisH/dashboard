@@ -1,3 +1,14 @@
+body {
+    background-color: #ffffff !important; 
+    
+    /* Opcional: Esto ayuda a que el texto predeterminado no sea blanco en modo oscuro */
+    color: #333333; 
+    
+    /* Esto es importante si estás usando Material UI y quieres anular estilos */
+    margin: 0; 
+    padding: 0;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

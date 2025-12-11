@@ -24,7 +24,7 @@ export default function useFetchData(selectedOption: string | null){
     useEffect(() => {
         const cityConfig = selectedOption != null ? CITY_COORDS[selectedOption] : CITY_COORDS["awe"];
 
-        const URL = `https://api.open-meteo.com/v1/forecast?latitude=${cityConfig.latitude}&longitude=${cityConfig.longitude}&hourly=temperature_2m,wind_speed_10m,precipitation_probability&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,rain&timezone=America%2FChicago`;
+        const URL = `https://api.open-meteo.com/v1/forecast?latitude=${cityConfig.latitude}&longitude=${cityConfig.longitude}&hourly=temperature_2m,wind_speed_10m,precipitation_probability&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,rain,wind_direction_10m&timezone=America%2FChicago`;
         const fetchData = async () => {
             try {
                 setLoading(true);

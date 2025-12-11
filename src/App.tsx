@@ -7,7 +7,9 @@ import IndicatorUI from './components/IndicatorUI';
 import useFetchData from './functions/useFetchData';
 import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
+import ImagesUI from './components/ImagesUI';
 import { useState } from 'react';
+import WindDirectionUI from './components/Information/WindDirectionUI';
 
 function App() {
 
@@ -29,7 +31,18 @@ function App() {
         <Grid container spacing={5} justifyContent="center" alignItems="center">
 
             {/* Encabezado */}
-            <Grid size={12}> <HeaderUI /> </Grid>
+            <Grid size={12} container alignItems="center">
+                <Grid size={3}>
+                    <ImagesUI url={"src/assets/Espol_Logo.png"} />
+                </Grid>
+                <Grid size={6} style={{ textAlign: 'center' }}>
+                    <HeaderUI />
+                </Grid>
+
+                <Grid size={3}>
+                    <ImagesUI url={"src/assets/Weather_Anim.gif"} />
+                </Grid>
+            </Grid>
 
             {/* Selector */}
             <Grid size={{ xs: 12, md: 3 }} id='selector'><SelectorUI onOptionSelect={setSelectedOption} /></Grid>
@@ -154,9 +167,27 @@ function App() {
                 }
             </Grid>
 
-            {/* Información adicional */}
-            <Grid size={{ xs: 12, md: 12 }}>Elemento: Información adicional</Grid>
+{dataFetcherOutput &&
+                    dataFetcherOutput.latitude !== 0 &&
+                    dataFetcherOutput.longitude !== 0 &&
+            <Grid size={{ xs: 12, md: 12 }} container >
+        
+                <Grid size={{ xs: 12, md: 3 }}>
+                    <WindDirectionUI direccion={dataFetcherOutput.current.wind_direction_10m}/>
+                </Grid>
 
+                <Grid size={{ xs: 12, md: 3 }}>
+                    
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 3 }}>
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 2.75 }}>
+                </Grid>
+                
+            </Grid> 
+}
         </Grid>
     );
 }

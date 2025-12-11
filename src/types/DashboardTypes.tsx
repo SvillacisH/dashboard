@@ -21,6 +21,7 @@ export interface CurrentUnits {
   weather_code: string
   wind_speed_10m: string
   rain: string
+  wind_direction_10m: string
 }
 
 export interface Current {
@@ -32,6 +33,7 @@ export interface Current {
   weather_code: number
   wind_speed_10m: number
   rain: number
+  wind_direction_10m: number
 }
 
 export interface HourlyUnits {
