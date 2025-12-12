@@ -61,12 +61,10 @@ export default function WindDirectionUI(prop: WindDirectionUIProps) {
                     },
                 }}
             >
-                {/* Título */}
                 <AlertTitle sx={{ fontWeight: 'bold', fontSize: '1.4rem'}}>
                 Dirección del Viento
                 </AlertTitle>
 
-                {/* Contenido principal: Usamos <strong> en lugar de Markdown **...** */}
                 <Typography variant="body1">
                     El viento sopla desde el {" "}
                     <strong>{direccionEtiqueta}</strong>.

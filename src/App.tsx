@@ -12,6 +12,7 @@ import ImagesUI from './components/ImagesUI';
 import { useState } from 'react';
 import WindDirectionUI from './components/WindDirectionUI';
 import { type ContinentKey } from './types/ContinentTypes';
+import Typography from '@mui/material/Typography';
 
 
 function App() {
@@ -52,6 +53,15 @@ function App() {
             : [];
     }
 
+    const displayCity = ciudad
+        ? (
+            <>
+                Información del clima para:{" "}
+                <strong style={{ fontWeight: 'bold' }}>{ciudad}</strong>
+            </>
+        )
+        : "Selecciona una Ubicación";
+
     return (
         <Grid container spacing={5} justifyContent="center" alignItems="center">
 
@@ -69,7 +79,12 @@ function App() {
                 </Grid>
             </Grid>
 
-            {/* Selector */}
+            {/* Indicador de seleccion de ciudad */}
+            <Grid size={12} container alignItems="center" justifyContent="center" >
+                <Typography variant="h4">{displayCity}</Typography>
+            </Grid>
+
+            {/* Selectores */}
             <Grid size={12} id='selector' container>
                 <Grid size={4}>
                     <SelectorUI
@@ -123,6 +138,7 @@ function App() {
                         resetTrigger={pais}
                     />
                 </Grid>
+
             </Grid>
 
 
