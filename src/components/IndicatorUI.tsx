@@ -4,7 +4,7 @@
 
  interface IndicatorUIProps {
      title?: string;
-     description?: string;
+     description?: number | string;
  }
 
  export default function IndicatorUI(props: IndicatorUIProps) {

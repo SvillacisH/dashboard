@@ -2,47 +2,50 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-interface SelectorProps {
-   onOptionSelect: (option: string) => void;
+interface SelectorUIProps {
+  label: string;
+  options: string[];
+  onOptionSelect: (value: string) => void;
+  disabled?: boolean;
+  resetTrigger?: any;
 }
 
-export default function SelectorUI({ onOptionSelect }: SelectorProps){
+export default function SelectorUI({
+  label,
+  options,
+  onOptionSelect,
+  disabled = false,
+  resetTrigger
+}: SelectorUIProps) {
+  
+  const [value, setValue] = useState("");
 
-    const [cityInput, setCityInput] = useState(''); //
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const val = event.target.value;
+    setValue(val);
+    onOptionSelect(val);
+  };
 
-    const handleChange = (event: SelectChangeEvent<string>) => {
-        setCityInput(event.target.value)
-        onOptionSelect(event.target.value);
-    };
+  // si cambia el "padre", resetea el selector
+  useEffect(() => {
+    setValue("");
+  }, [resetTrigger]);
 
-    return (
-        <FormControl fullWidth>
-            <InputLabel id="city-select-label">Ciudad</InputLabel>
-            <Select
-                labelId="city-select-label"
-                id="city-simple-select"
-                label="Ciudad"
-                onChange={handleChange}
-                value={cityInput}>
-                <MenuItem disabled><em>Seleccione una ciudad</em></MenuItem>
-                <MenuItem value={"Guayaquil"}>Guayaquil</MenuItem>
-                <MenuItem value={"Quito"}>Quito</MenuItem>
-                <MenuItem value={"Manta"}>Manta</MenuItem>
-                <MenuItem value={"Cuenca"}>Cuenca</MenuItem>
-                <MenuItem value={"Salinas"}>Salinas</MenuItem>
-                <MenuItem value={"Puerto Lopez"}>Puerto Lopez</MenuItem>
-                <MenuItem value={"Puyo"}>Puyo</MenuItem>
-                <MenuItem value={"Vinces"}>Vinces</MenuItem>
-                <MenuItem value={"Samborondon"}>Samborondon</MenuItem>
-                <MenuItem value={"Latacunga"}>Latacunga</MenuItem>
-            </Select>
-            {cityInput && (
-                <p style={{ color: '#212121' }}>
-                    Información del clima en <span style={{ textTransform: 'capitalize', fontWeight: 'bold', color: 'black'}}>{cityInput}</span>
-                </p>
-            )}
-        </FormControl>
-    )
+  return (
+    <FormControl fullWidth disabled={disabled}>
+      <InputLabel>{label}</InputLabel>
+      <Select value={value} label={label} onChange={handleChange}>
+
+        <MenuItem disabled>
+          <em>Seleccione {label.toLowerCase()}</em>
+        </MenuItem>
+
+        {options.map(opt => (
+          <MenuItem key={opt} value={opt}>{opt}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
 }

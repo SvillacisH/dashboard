@@ -4,28 +4,53 @@ import HeaderUI from './components/HeaderUI';
 import AlertUI from './components/AlertUI';
 import SelectorUI from './components/SelectorUI';
 import IndicatorUI from './components/IndicatorUI';
-import useFetchData from './functions/useFetchData';
+import useFetchData from './functions/useWeatherData';
+import useLocationData from './functions/useLocationData';
 import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
 import ImagesUI from './components/ImagesUI';
 import { useState } from 'react';
 import WindDirectionUI from './components/Information/WindDirectionUI';
+import { type ContinentKey } from './types/ContinentTypes';
+
 
 function App() {
 
+    const [continente, setContinente] = useState<ContinentKey | "">("");
+    const [pais, setPais] = useState<string>("");
+    const [ciudad, setCiudad] = useState<string>("");
+    const [latitud, setLatitud] = useState<number | null>(null);
+    const [longitud, setLongitud] = useState<number | null>(null);
 
-    const [selectedOption, setSelectedOption] = useState<string | null>(null);
-    const { dataFetcherOutput, loadingFetcherOutput, errorFetcherOutput } = useFetchData(selectedOption);
+    const { dataWeatherOuput, loadingWeatherOutput, errorWeatherOutput } = useFetchData(latitud, longitud);
+    const { dataLocationOutput } = useLocationData();
 
-    const horas = dataFetcherOutput?.hourly?.time
-        ? dataFetcherOutput.hourly.time.map(t => t.split("T")[1])
+
+    const horas = dataWeatherOuput?.hourly?.time
+        ? dataWeatherOuput.hourly.time.map(t => t.split("T")[1])
         : [];
-    const fechas = dataFetcherOutput?.hourly?.time
-        ? dataFetcherOutput.hourly.time.map(t => t.split("T")[0])
+    const fechas = dataWeatherOuput?.hourly?.time
+        ? dataWeatherOuput.hourly.time.map(t => t.split("T")[0])
         : [];
 
-    const climaCode = dataFetcherOutput?.current?.weather_code;
+    const climaCode = dataWeatherOuput?.current?.weather_code;
 
+    const continentes: ContinentKey[] = dataLocationOutput
+        ? (Object.keys(dataLocationOutput) as ContinentKey[])
+        : [];
+
+    const paises =
+        continente && dataLocationOutput
+            ? dataLocationOutput[continente].map((p) => p.pais)
+            : [];
+
+    let ciudades: string[] = [];
+    if (continente && pais && dataLocationOutput) {
+        const paisObj = dataLocationOutput[continente].find((p) => p.pais === pais);
+        ciudades = paisObj
+            ? paisObj.ciudades_mas_pobladas.map((c) => c.nombre)
+            : [];
+    }
 
     return (
         <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -45,150 +70,191 @@ function App() {
             </Grid>
 
             {/* Selector */}
-            <Grid size={{ xs: 12, md: 3 }} id='selector'><SelectorUI onOptionSelect={setSelectedOption} /></Grid>
+            <Grid size={12} id='selector' container>
+                <Grid size={4}>
+                    <SelectorUI
+                        label="Continente"
+                        options={continentes}
+                        onOptionSelect={(value) => {
+                            setContinente(value as ContinentKey);
+                            setPais("");      // reset país
+                            setCiudad("");    // reset ciudad
+                            setLatitud(null);
+                            setLongitud(null);
+                        }}
+                        resetTrigger={null}
+                    />
+
+                </Grid>
+
+                <Grid size={4}>
+                    <SelectorUI
+                        label="País"
+                        options={paises}
+                        onOptionSelect={(value) => {
+                            setPais(value);
+                            setCiudad(""); // reset ciudad
+                            setLatitud(null);
+                            setLongitud(null);
+                        }}
+                        disabled={!continente}
+                        resetTrigger={continente}
+                    />
+                </Grid>
+
+                <Grid size={4}>
+                    <SelectorUI
+                        label="Ciudad"
+                        options={ciudades}
+                        onOptionSelect={(value) => {
+
+                            setCiudad(value);
+
+                            if (continente && pais && dataLocationOutput) {
+                                const paisObj = dataLocationOutput[continente].find(p => p.pais === pais);
+
+                                const ciudadObj = paisObj?.ciudades_mas_pobladas.find(c => c.nombre === value);
+
+                                setLatitud(ciudadObj?.latitud ?? null);
+                                setLongitud(ciudadObj?.longitud ?? null);
+                            }
+                        }}
+                        disabled={!pais}
+                        resetTrigger={pais}
+                    />
+                </Grid>
+            </Grid>
+
 
             {/* Indicadores */}
-            <Grid container size={{ xs: 12, md: 9 }} >
+            <Grid container size={12} >
 
-                {loadingFetcherOutput && (
-                    <Grid size={12} style={{ textAlign: "center" }}>
-                        <p>Cargando datos del clima...</p>
-                    </Grid>
-                )}
+                {loadingWeatherOutput &&
 
-                {errorFetcherOutput && (
+                    (
+                        <Grid size={12} style={{ textAlign: "center" }}>
+                            <p>Cargando datos del clima...</p>
+                        </Grid>
+                    )}
+
+                {errorWeatherOutput && (
                     <Grid size={12} style={{ textAlign: "center", color: "red" }}>
-                        <p>Error al cargar los datos: {errorFetcherOutput}</p>
+                        <p>Error al cargar los datos: {errorWeatherOutput}</p>
                     </Grid>
                 )}
 
                 <Grid size={{ xs: 12, md: 3 }}>
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude !== 0 &&
-                        dataFetcherOutput.longitude !== 0 &&
-                        (<IndicatorUI
-                            title='Temperatura (2m)'
-                            description={`${dataFetcherOutput.current.temperature_2m} ${dataFetcherOutput.current_units.temperature_2m}`} />)
-                    }
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude == 0 &&
-                        dataFetcherOutput.longitude == 0 &&
-                        (<IndicatorUI
-                            title='Temperatura (2m)'
-                            description='--' />)
-                    }
+                    <IndicatorUI
+                        title="Temperatura (2m)"
+                        description={
+                            dataWeatherOuput
+                                ? dataWeatherOuput.latitude === 0 && dataWeatherOuput.longitude === 0
+                                    ? "--"
+                                    : dataWeatherOuput.current.temperature_2m
+                                : "--"
+                        }
+                    />
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 3 }}>
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude !== 0 &&
-                        dataFetcherOutput.longitude !== 0 &&
-                        (<IndicatorUI
-                            title='Temperatura Aparente'
-                            description={`${dataFetcherOutput.current.apparent_temperature} ${dataFetcherOutput.current_units.apparent_temperature}`} />)
-                    }
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude == 0 &&
-                        dataFetcherOutput.longitude == 0 &&
-                        (<IndicatorUI
-                            title='Temperatura Aparente'
-                            description='--' />)
-                    }
+                    <IndicatorUI
+                        title="Temperatura Aparente"
+                        description={
+                            dataWeatherOuput
+                                ? dataWeatherOuput.latitude === 0 && dataWeatherOuput.longitude === 0
+                                    ? "--"
+                                    : dataWeatherOuput.current.apparent_temperature
+                                : "--"
+                        }
+                    />
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 3 }}>
 
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude !== 0 &&
-                        dataFetcherOutput.longitude !== 0 &&
-                        (<IndicatorUI
-                            title='Velocidad del Viento'
-                            description={`${dataFetcherOutput.current.wind_speed_10m} ${dataFetcherOutput.current_units.wind_speed_10m}`} />)
-                    }
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude == 0 &&
-                        dataFetcherOutput.longitude == 0 &&
-                        (<IndicatorUI
-                            title='Velocidad del Viento'
-                            description='--' />)
-                    }
+                    <IndicatorUI
+                        title="Velocidad del Viento (10m)"
+                        description={
+                            dataWeatherOuput
+                                ? dataWeatherOuput.latitude === 0 && dataWeatherOuput.longitude === 0
+                                    ? "--"
+                                    : dataWeatherOuput.current.wind_speed_10m
+                                : "--"
+                        }
+                    />
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 3 }}>
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude !== 0 &&
-                        dataFetcherOutput.longitude !== 0 &&
-                        (<IndicatorUI
-                            title='Humedad Relativa (2m)'
-                            description={`${dataFetcherOutput.current.relative_humidity_2m} ${dataFetcherOutput.current_units.relative_humidity_2m}`} />)
-                    }
-                    {dataFetcherOutput &&
-                        dataFetcherOutput.latitude == 0 &&
-                        dataFetcherOutput.longitude == 0 &&
-                        (<IndicatorUI
-                            title='Humedad Relativa (2m)'
-                            description='--' />)
-                    }
+                    <IndicatorUI
+                        title="Humedad Relativa (2m)"
+                        description={
+                            dataWeatherOuput
+                                ? dataWeatherOuput.latitude === 0 && dataWeatherOuput.longitude === 0
+                                    ? "--"
+                                    : dataWeatherOuput.current.relative_humidity_2m
+                                : "--"
+                        }
+                    />
                 </Grid>
 
             </Grid>
 
             {/* Gráfico */}
             <Grid size={{ xs: 12, md: 6 }} sx={{ display: { xs: "none", md: "block" } }}>
-                {dataFetcherOutput &&
-                    dataFetcherOutput.latitude !== 0 &&
-                    dataFetcherOutput.longitude !== 0 &&
+                {dataWeatherOuput &&
+                    dataWeatherOuput.latitude !== 0 &&
+                    dataWeatherOuput.longitude !== 0 &&
                     (<ChartUI
                         fecha={horas.slice(0, 15)}
-                        temperatura={dataFetcherOutput.hourly.temperature_2m.slice(0, 15)}
-                        velocidad={dataFetcherOutput.hourly.wind_speed_10m.slice(0, 15)}
-                        precipitacion={dataFetcherOutput.hourly.precipitation_probability.slice(0, 15)} />)
+                        temperatura={dataWeatherOuput.hourly.temperature_2m.slice(0, 15)}
+                        velocidad={dataWeatherOuput.hourly.wind_speed_10m.slice(0, 15)}
+                        precipitacion={dataWeatherOuput.hourly.precipitation_probability.slice(0, 15)} />)
                 }</Grid>
 
             {/* Tabla */}
             <Grid size={{ xs: 12, md: 6 }} sx={{ display: { xs: "none", md: "block" } }}>
-                {dataFetcherOutput &&
-                    dataFetcherOutput.latitude !== 0 &&
-                    dataFetcherOutput.longitude !== 0 &&
+                {dataWeatherOuput &&
+                    dataWeatherOuput.latitude !== 0 &&
+                    dataWeatherOuput.longitude !== 0 &&
                     (<TableUI
                         hora={horas}
                         fecha={fechas}
-                        temperatura={dataFetcherOutput.hourly.temperature_2m}
-                        velocidad={dataFetcherOutput.hourly.wind_speed_10m}
-                        probabilidad={dataFetcherOutput.hourly.precipitation_probability} />)
+                        temperatura={dataWeatherOuput.hourly.temperature_2m}
+                        velocidad={dataWeatherOuput.hourly.wind_speed_10m}
+                        probabilidad={dataWeatherOuput.hourly.precipitation_probability} />)
                 }</Grid>
 
             {/* Alertas */}
             <Grid size={12} container justifyContent="center">
-                {dataFetcherOutput &&
-                    dataFetcherOutput.latitude !== 0 &&
-                    dataFetcherOutput.longitude !== 0 &&
+                {dataWeatherOuput &&
+                    dataWeatherOuput.latitude !== 0 &&
+                    dataWeatherOuput.longitude !== 0 &&
                     <AlertUI clima={climaCode} />
                 }
             </Grid>
 
-{dataFetcherOutput &&
-                    dataFetcherOutput.latitude !== 0 &&
-                    dataFetcherOutput.longitude !== 0 &&
-            <Grid size={{ xs: 12, md: 12 }} container >
-        
-                <Grid size={{ xs: 12, md: 3 }}>
-                    <WindDirectionUI direccion={dataFetcherOutput.current.wind_direction_10m}/>
-                </Grid>
+            {
+                dataWeatherOuput &&
+                dataWeatherOuput.latitude !== 0 &&
+                dataWeatherOuput.longitude !== 0 &&
+                <Grid size={{ xs: 12, md: 12 }} container >
 
-                <Grid size={{ xs: 12, md: 3 }}>
-                    
-                </Grid>
+                    <Grid size={{ xs: 12, md: 3 }}>
+                        <WindDirectionUI direccion={dataWeatherOuput.current.wind_direction_10m} />
+                    </Grid>
 
-                <Grid size={{ xs: 12, md: 3 }}>
-                </Grid>
+                    <Grid size={{ xs: 12, md: 3 }}>
 
-                <Grid size={{ xs: 12, md: 2.75 }}>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 3 }}>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 2.75 }}>
+                    </Grid>
+
                 </Grid>
-                
-            </Grid> 
-}
-        </Grid>
+            }
+        </Grid >
     );
 }
 
