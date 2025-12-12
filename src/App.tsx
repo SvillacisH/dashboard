@@ -69,14 +69,14 @@ function App() {
 
             {/* Encabezado */}
             <Grid size={12} container alignItems="center">
-                <Grid size={3}>
+                <Grid size={3} sx={{ display: { xs: "none", md: "block" } }}>
                     <ImagesUI url={EspolLogo} />
                 </Grid>
-                <Grid size={6} style={{ textAlign: 'center' }}>
+                <Grid size={{ xs: 12, md: 6 }} style={{ textAlign: 'center' }}>
                     <HeaderUI />
                 </Grid>
 
-                <Grid size={3}>
+                <Grid size={3} sx={{ display: { xs: "none", md: "block" } }}>
                     <ImagesUI url={WeatherAnim} />
                 </Grid>
             </Grid>
