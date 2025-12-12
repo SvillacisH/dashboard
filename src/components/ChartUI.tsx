@@ -1,7 +1,6 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import Typography from '@mui/material/Typography';
-import React, { useMemo } from 'react';
-
+import { useMemo } from 'react';
 
 
 interface ChartUIProps {
