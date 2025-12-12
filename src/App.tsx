@@ -10,7 +10,7 @@ import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
 import ImagesUI from './components/ImagesUI';
 import { useState } from 'react';
-import WindDirectionUI from './components/Information/WindDirectionUI';
+import WindDirectionUI from './components/WindDirectionUI';
 import { type ContinentKey } from './types/ContinentTypes';
 
 
@@ -77,8 +77,8 @@ function App() {
                         options={continentes}
                         onOptionSelect={(value) => {
                             setContinente(value as ContinentKey);
-                            setPais("");      // reset país
-                            setCiudad("");    // reset ciudad
+                            setPais("");
+                            setCiudad("");
                             setLatitud(null);
                             setLongitud(null);
                         }}
@@ -93,7 +93,7 @@ function App() {
                         options={paises}
                         onOptionSelect={(value) => {
                             setPais(value);
-                            setCiudad(""); // reset ciudad
+                            setCiudad("");
                             setLatitud(null);
                             setLongitud(null);
                         }}
@@ -204,10 +204,10 @@ function App() {
                     dataWeatherOuput.latitude !== 0 &&
                     dataWeatherOuput.longitude !== 0 &&
                     (<ChartUI
-                        fecha={horas.slice(0, 15)}
-                        temperatura={dataWeatherOuput.hourly.temperature_2m.slice(0, 15)}
-                        velocidad={dataWeatherOuput.hourly.wind_speed_10m.slice(0, 15)}
-                        precipitacion={dataWeatherOuput.hourly.precipitation_probability.slice(0, 15)} />)
+                        fecha={dataWeatherOuput.hourly.time}
+                        temperatura={dataWeatherOuput.hourly.temperature_2m}
+                        velocidad={dataWeatherOuput.hourly.wind_speed_10m}
+                        precipitacion={dataWeatherOuput.hourly.precipitation_probability} />)
                 }</Grid>
 
             {/* Tabla */}
@@ -223,37 +223,26 @@ function App() {
                         probabilidad={dataWeatherOuput.hourly.precipitation_probability} />)
                 }</Grid>
 
+
             {/* Alertas */}
             <Grid size={12} container justifyContent="center">
                 {dataWeatherOuput &&
                     dataWeatherOuput.latitude !== 0 &&
                     dataWeatherOuput.longitude !== 0 &&
-                    <AlertUI clima={climaCode} />
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <AlertUI clima={climaCode} />
+                    </Grid>
+
+
                 }
-            </Grid>
-
-            {
-                dataWeatherOuput &&
-                dataWeatherOuput.latitude !== 0 &&
-                dataWeatherOuput.longitude !== 0 &&
-                <Grid size={{ xs: 12, md: 12 }} container >
-
-                    <Grid size={{ xs: 12, md: 3 }}>
+                {dataWeatherOuput &&
+                    dataWeatherOuput.latitude !== 0 &&
+                    dataWeatherOuput.longitude !== 0 &&
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <WindDirectionUI direccion={dataWeatherOuput.current.wind_direction_10m} />
                     </Grid>
-
-                    <Grid size={{ xs: 12, md: 3 }}>
-
-                    </Grid>
-
-                    <Grid size={{ xs: 12, md: 3 }}>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, md: 2.75 }}>
-                    </Grid>
-
-                </Grid>
-            }
+                }
+            </Grid>
         </Grid >
     );
 }

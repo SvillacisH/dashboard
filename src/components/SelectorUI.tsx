@@ -28,7 +28,7 @@ export default function SelectorUI({
     onOptionSelect(val);
   };
 
-  // si cambia el "padre", resetea el selector
+  
   useEffect(() => {
     setValue("");
   }, [resetTrigger]);

@@ -6,11 +6,9 @@ type ClimaInfo = {
 };
 
 const climas: Map<number, ClimaInfo> = new Map([
-    // --- SUCCESS ---
     [0, { name: "Cielo despejado", severity: "success" }],
     [1, { name: "Mayormente despejado", severity: "success" }],
 
-    // --- INFO ---
     [2, { name: "Parcialmente nublado", severity: "info" }],
     [3, { name: "Nublado", severity: "info" }],
 
@@ -25,7 +23,6 @@ const climas: Map<number, ClimaInfo> = new Map([
     [71, { name: "Nevada ligera", severity: "info" }],
     [77, { name: "Granitos de nieve", severity: "info" }],
 
-    // --- WARNING ---
     [55, { name: "Llovizna densa", severity: "warning" }],
 
     [56, { name: "Llovizna helada ligera", severity: "warning" }],
@@ -44,7 +41,6 @@ const climas: Map<number, ClimaInfo> = new Map([
     [85, { name: "Chubascos de nieve ligeros", severity: "warning" }],
     [95, { name: "Tormenta eléctrica", severity: "warning" }],
 
-    // --- ERROR ---
     [67, { name: "Lluvia helada fuerte", severity: "error" }],
     [86, { name: "Chubascos de nieve fuertes", severity: "error" }],
     [96, { name: "Tormenta eléctrica con granizo ligero", severity: "error" }],
