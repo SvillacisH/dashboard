@@ -13,6 +13,8 @@ import { useState } from 'react';
 import WindDirectionUI from './components/WindDirectionUI';
 import { type ContinentKey } from './types/ContinentTypes';
 import Typography from '@mui/material/Typography';
+import EspolLogo from './assets/Espol_Logo.png';
+import WeatherAnim from './assets/Weather_Anim.gif';
 
 
 function App() {
@@ -68,14 +70,14 @@ function App() {
             {/* Encabezado */}
             <Grid size={12} container alignItems="center">
                 <Grid size={3}>
-                    <ImagesUI url={"src/assets/Espol_Logo.png"} />
+                    <ImagesUI url={EspolLogo} />
                 </Grid>
                 <Grid size={6} style={{ textAlign: 'center' }}>
                     <HeaderUI />
                 </Grid>
 
                 <Grid size={3}>
-                    <ImagesUI url={"src/assets/Weather_Anim.gif"} />
+                    <ImagesUI url={WeatherAnim} />
                 </Grid>
             </Grid>
 
